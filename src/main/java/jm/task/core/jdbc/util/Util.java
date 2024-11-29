@@ -1,12 +1,10 @@
 package jm.task.core.jdbc.util;
 
-import javax.crypto.spec.PSource;
 import java.sql.*;
 
 public class Util {
 
     private static final String DB_CONNECTION = "jdbc:mysql://localhost:3306/kata";
-    private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = "12345";
 

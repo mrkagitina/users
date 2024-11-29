@@ -16,12 +16,10 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void createUsersTable() {
         try {
-            String sql = "CREATE TABLE IF EXIST USERS (`id` INT NOT NULL, `name` VARCHAR(45) NOT NULL, `lastName` VARCHAR(45) NOT NULL, " +
-                    "`age` INT NOT NULL, PRIMARY KEY (`id`), UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE);";
+            String sql = "CREATE TABLE IF NOT EXISTS USERS (`id` BIGINT AUTO_INCREMENT PRIMARY KEY, `name` VARCHAR(50), `lastName` VARCHAR(50), `age` TINYINT);";
 
             try (Statement statement = connection.createStatement()) {
-                statement.executeUpdate(sql);
-                System.out.println("Table created");
+                statement.execute(sql);
             }
         } catch (Exception e) {
             System.out.println("Connection while creating the table failed");
@@ -32,6 +30,7 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Statement statement = connection.createStatement()) {
             statement.execute("DROP TABLE IF EXISTS USERS");
         } catch (SQLException e) {
+            System.out.println("Connection while dropping the table failed");
         }
     }
 
@@ -43,17 +42,16 @@ public class UserDaoJDBCImpl implements UserDao {
                 preparedStatement.setByte(3, age);
                 preparedStatement.executeUpdate();
 
-                System.out.println("User created");
             } catch (Exception e) {
             System.out.println("Connection while saving the user failed");
         }
     }
 
     public void removeUserById(long id) {
-
-            try (PreparedStatement preparedStatement = connection.prepareStatement("TRUNCATE FROM USERS WHERE id = ?")) {
-                preparedStatement.executeUpdate("TRUNCATE FROM USERS WHERE id = ?");
-                System.out.println("User removed");
+        try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM USERS WHERE id = ?")) {
+                preparedStatement.executeUpdate("DELETE FROM USERS WHERE id = ?");
+                preparedStatement.setLong(1, id);
+                preparedStatement.executeUpdate();
             } catch (Exception e) {
             System.out.println("Connection while removing the user failed");
         }
@@ -86,9 +84,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-            try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE TABLE FROM `kata`.`USERS`")) {
-                preparedStatement.executeUpdate("DELETE TABLE FROM `kata`.`USERS`;");
-                System.out.println("Table cleaned");
+            try (PreparedStatement preparedStatement = connection.prepareStatement("TRUNCATE TABLE USERS")) {
+                preparedStatement.executeUpdate("TRUNCATE TABLE USERS");
             } catch (Exception e) {
             System.out.println("Connection while cleaning the table failed");
         }
