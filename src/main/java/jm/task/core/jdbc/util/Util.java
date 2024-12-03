@@ -15,7 +15,6 @@ public class Util {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return connection;
     }
 }
